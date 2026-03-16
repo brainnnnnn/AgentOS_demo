@@ -99,8 +99,8 @@ export default function SectionMarker({
     return geometry
   }, [orbitPoints])
 
-  // 计算标记颜色
-  const markerColor = isActive ? "#FFFFFF" : hovered ? "#FFFFFF" : orbitConfig.color
+  // 计算标记颜色 - hover 和 active 时保持原色，只调整发光强度
+  const markerColor = orbitConfig.color
   const glowIntensity = isActive ? 2.5 : hovered ? 2 : 1.5
 
   // 更新标记位置和动画
