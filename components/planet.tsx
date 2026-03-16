@@ -240,7 +240,17 @@ const Planet = forwardRef(
       // 统一所有轨道半径
       const orbitRadius = 10.0
 
-      return sections.map((_, index) => {
+      // 根据 section ID 获取对应的颜色
+      const getSectionColor = (sectionId: string) => {
+        switch (sectionId) {
+          case "sponsor":
+            return "#39FF14" // 亮绿色 - 科学探索/游戏模式
+          default:
+            return orbitColor // 默认蓝色
+        }
+      }
+
+      return sections.map((section, index) => {
         // 均匀分布起始角度
         const startAngle = index * angleStep
 
@@ -259,7 +269,7 @@ const Planet = forwardRef(
           tiltZ: orbitTiltZ,
           speed: orbitSpeed,
           startAngle: startAngle,
-          color: orbitColor,
+          color: getSectionColor(section.id),
         }
       })
     }, [orbitColor])

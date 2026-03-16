@@ -3,6 +3,8 @@
 import { motion, AnimatePresence } from "framer-motion"
 import { BookOpen, Calculator, Headphones, FileText, Target, BookMarked, PenLine, ChevronRight, Play, Phone } from "lucide-react"
 import { useState, useEffect, useRef } from "react"
+import { type CardMode } from "@/config/cards.config"
+import { GomokuGame } from "./gomoku-game"
 
 interface Suggestion {
   label: string
@@ -68,7 +70,15 @@ interface ExerciseCard {
   questionCount: number
 }
 
-type CardItem = CourseCard | AIToolsCard | DailyTaskCard | AIVoiceCard | KnowledgeCard | SummaryCard | ExerciseCard
+interface GameCardData {
+  type: "game"
+  title: string
+  description: string
+  image?: string
+  gameType: string
+}
+
+type CardItem = CourseCard | AIToolsCard | DailyTaskCard | AIVoiceCard | KnowledgeCard | SummaryCard | ExerciseCard | GameCardData
 
 interface DashboardData {
   title: string
@@ -78,10 +88,10 @@ interface DashboardData {
 
 // 校内同步学习数据
 const SCHOOL_SYNC_DATA: DashboardData = {
-  title: "来看看下周的预习内容吧",
+  title: "来复习一下这周学习的新内容吧",
   suggestions: [
-    { label: "有理数运算 ▶", action: "帮我预习有理数运算" },
-    { label: "文言文理解 ▶", action: "帮我预习文言文理解" }
+    { label: "有理数运算 ▶", action: "帮我复习有理数运算" },
+    { label: "文言文理解 ▶", action: "帮我复习文言文理解" }
   ],
   cards: [
     {
@@ -159,24 +169,110 @@ const WEAK_POINTS_DATA: DashboardData = {
   ]
 }
 
+// 阅读相关学习数据
+const READING_DATA: DashboardData = {
+  title: "妈妈的100天阅读冲刺",
+  suggestions: [
+    { label: "古诗词赏析 ▶", action: "帮我赏析古诗词" },
+    { label: "阅读理解技巧 ▶", action: "阅读理解答题技巧" }
+  ],
+  cards: [
+    {
+      type: "course",
+      title: "经典阅读",
+      image: "/images/course-reading.png",
+      courseName: "古诗词名篇赏析",
+      tasks: [
+        { name: "诗词背诵", completed: 0, total: 5 },
+        { name: "赏析笔记", completed: 0, total: 1 }
+      ],
+      buttonText: "开始学习"
+    },
+    {
+      type: "knowledge",
+      title: "阅读技巧",
+      description: "掌握文章分析和理解方法，提升阅读速度和准确性。",
+      buttonText: "查看技巧"
+    },
+    {
+      type: "summary",
+      title: "写作手法",
+      description: "常见修辞手法和表达方式总结。",
+      icon: "book"
+    },
+    {
+      type: "exercise",
+      title: "阅读理解练习",
+      description: "提高阅读速度和理解能力",
+      image: "/images/exercise-reading.png",
+      questionCount: 8
+    }
+  ]
+}
+
+// 游戏模式数据
+const GAME_DATA: DashboardData = {
+  title: "学累了？来和小思下盘五子棋吧！",
+  suggestions: [
+    { label: "五子棋规则 ▶", action: "五子棋怎么玩" },
+    { label: "让我赢一把 😄", action: "小思让让我" }
+  ],
+  cards: [
+    {
+      type: "game",
+      title: "五子棋对战",
+      description: "和 AI 小思来一场五子棋对决",
+      gameType: "gomoku"
+    }
+  ]
+}
+
 interface DashboardCardsProps {
   accentColor: string
-  mode?: "school-sync" | "weak-points"
+  mode?: Exclude<CardMode, "homework">  // homework 模式有专门的视图，不通过 DashboardCards 渲染
   onSuggestionClick?: (action: string) => void
 }
 
 export function DashboardCards({ accentColor, mode = "school-sync", onSuggestionClick }: DashboardCardsProps) {
-  const currentData = mode === "school-sync" ? SCHOOL_SYNC_DATA : WEAK_POINTS_DATA
+  const getCurrentData = () => {
+    switch (mode) {
+      case "school-sync":
+        return SCHOOL_SYNC_DATA
+      case "reading":
+        return READING_DATA
+      case "game":
+        return GAME_DATA
+      case "weak-points":
+      default:
+        return WEAK_POINTS_DATA
+    }
+  }
+  const currentData = getCurrentData()
 
   // 保留旧数据用于退出动画
   const [prevMode, setPrevMode] = useState(mode)
   const [exitData, setExitData] = useState<DashboardData | null>(null)
   const [isExiting, setIsExiting] = useState(false)
 
+  // 根据 mode 获取对应的数据
+  const getDataByMode = (m: typeof mode): DashboardData => {
+    switch (m) {
+      case "school-sync":
+        return SCHOOL_SYNC_DATA
+      case "reading":
+        return READING_DATA
+      case "game":
+        return GAME_DATA
+      case "weak-points":
+      default:
+        return WEAK_POINTS_DATA
+    }
+  }
+
   useEffect(() => {
     if (mode !== prevMode) {
       // mode 变化时，保存旧数据并开始退出动画
-      const oldData = prevMode === "school-sync" ? SCHOOL_SYNC_DATA : WEAK_POINTS_DATA
+      const oldData = getDataByMode(prevMode)
       setExitData(oldData)
       setIsExiting(true)
       setPrevMode(mode)
@@ -351,6 +447,8 @@ function CardItemRenderer({ card, accentColor }: { card: CardItem; accentColor: 
       return <SummaryCard card={card} accentColor={accentColor} />
     case "exercise":
       return <ExerciseCard card={card} accentColor={accentColor} />
+    case "game":
+      return <GameCard card={card} accentColor={accentColor} />
     default:
       return null
   }
@@ -758,6 +856,21 @@ function ExerciseCard({ card, accentColor }: { card: ExerciseCard; accentColor: 
           </button>
         </div>
       </div>
+    </div>
+  )
+}
+
+// 游戏卡片 - 直接嵌入五子棋游戏
+function GameCard({ card, accentColor }: { card: GameCardData; accentColor: string }) {
+  return (
+    <div
+      style={{
+        background: "rgba(255,255,255,0.06)",
+        borderRadius: 16,
+        padding: 16,
+      }}
+    >
+      <GomokuGame accentColor={accentColor} />
     </div>
   )
 }
