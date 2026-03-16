@@ -200,7 +200,23 @@ const PlanetExperience = forwardRef<{ handleSectionClick: (sectionId: string) =>
     }, [])
 
     // Use the selected theme or default to the first theme
-    const theme = selectedTheme || themes[0]
+    const baseTheme = selectedTheme || themes[0]
+
+    // 根据 activeSection 动态改变星球颜色
+    const theme = useMemo(() => {
+      const dynamicColor = (() => {
+        if (activeSection === "homework") return "#FF9500" // 橙色
+        if (activeSection === "sponsor") return "#78ffd6"  // 青绿色
+        return baseTheme.planetColor // 默认蓝色
+      })()
+
+      return {
+        ...baseTheme,
+        planetColor: dynamicColor,
+        glowColor: dynamicColor,
+        accentColor: dynamicColor,
+      }
+    }, [activeSection, baseTheme])
 
     // Calculate section positions for camera targeting - use deterministic pseudo-random based on section id
     // to avoid hydration mismatch between SSR and client

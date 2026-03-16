@@ -24,6 +24,11 @@ export interface ChatBackgroundConfig {
   gradientEdge: string
   glowColor: string
   glowIntensity: number
+  /** 弹窗背景渐变 - 从中心到边缘 */
+  modalGradient: {
+    center: string
+    edge: string
+  }
 }
 
 /** 应用模式类型 */
@@ -84,9 +89,9 @@ export const modeColors: Record<AppMode, { planetColor: string; glowColor: strin
     accentColor: "#29B6F6",
   },
   homework: {
-    planetColor: "#FF8800",
-    glowColor: "#FFAA33",
-    accentColor: "#FFAA33",
+    planetColor: "#FF9500",
+    glowColor: "#FF9500",
+    accentColor: "#FF9500",
   },
   learning: {
     planetColor: "#29B6F6",
@@ -94,9 +99,9 @@ export const modeColors: Record<AppMode, { planetColor: string; glowColor: strin
     accentColor: "#29B6F6",
   },
   game: {
-    planetColor: "#39FF14",
-    glowColor: "#80FF40",
-    accentColor: "#39FF14",
+    planetColor: "#78ffd6",
+    glowColor: "#78ffd6",
+    accentColor: "#78ffd6",
   },
 }
 
@@ -107,24 +112,40 @@ export const modeBackgrounds: Record<AppMode, ChatBackgroundConfig> = {
     gradientEdge: "rgba(0, 0, 0, 0.7)",
     glowColor: "#29B6F6",
     glowIntensity: 1,
+    modalGradient: {
+      center: "#4FC3F7",
+      edge: "#0a1628",
+    },
   },
   homework: {
-    gradientCenter: "rgba(255, 136, 0, 0.25)",
+    gradientCenter: "rgba(255, 149, 0, 0.2)",
     gradientEdge: "rgba(0, 0, 0, 0.7)",
-    glowColor: "#FFAA33",
-    glowIntensity: 1.2,
+    glowColor: "#FF9500",
+    glowIntensity: 1,
+    modalGradient: {
+      center: "#FF9500",
+      edge: "#0a1628",
+    },
   },
   learning: {
     gradientCenter: "rgba(41, 182, 246, 0.2)",
     gradientEdge: "rgba(0, 0, 0, 0.7)",
     glowColor: "#29B6F6",
     glowIntensity: 1,
+    modalGradient: {
+      center: "#4FC3F7",
+      edge: "#0a1628",
+    },
   },
   game: {
-    gradientCenter: "rgba(57, 255, 20, 0.15)",
+    gradientCenter: "rgba(120, 255, 214, 0.2)",
     gradientEdge: "rgba(0, 0, 0, 0.7)",
-    glowColor: "#39FF14",
-    glowIntensity: 1.5,
+    glowColor: "#78ffd6",
+    glowIntensity: 1,
+    modalGradient: {
+      center: "#78ffd6",
+      edge: "#0a1628",
+    },
   },
 }
 

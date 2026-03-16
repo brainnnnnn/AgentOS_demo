@@ -28,6 +28,7 @@ import {
 import {
   getThemeByMode,
   getModeBySection,
+  getChatBackground,
   type AppMode,
 } from "@/config/themes.config"
 import { fetchXiaosiResponse, type XiaosiResponse } from "@/lib/api"
@@ -189,6 +190,8 @@ function MainContent() {
     setActiveSectionId("hero")
     setShowChat(true)
     setShowOrb(false)
+    // 触发 Three.js 相机移动到橙色小球位置
+    planetExperienceRef.current?.handleSectionClick("homework")
   }, [])
 
   // 处理开始学习
@@ -319,15 +322,16 @@ function MainContent() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              {/* 背景遮罩 */}
+              {/* 背景遮罩 - 根据模式显示不同渐变 */}
               <motion.div
                 style={{
                   position: "absolute",
                   inset: 0,
-                  background:
-                    appMode === "homework"
-                      ? `radial-gradient(circle at center, ${ORANGE_THEME.primary}20 0%, rgba(0,0,0,0.7) 100%)`
-                      : "rgba(0,0,0,0.5)",
+                  background: (() => {
+                    const bg = getChatBackground(appMode)
+                    // 简化：中心颜色（带透明度）→ 边缘黑色半透明
+                    return `radial-gradient(circle at center, ${bg.modalGradient.center}30 0%, ${bg.modalGradient.edge} 100%)`
+                  })(),
                 }}
                 onClick={handleCloseChat}
                 initial={{ opacity: 0 }}
@@ -354,7 +358,7 @@ function MainContent() {
                     position: "relative",
                     borderRadius: 20,
                     padding: "1px",
-                    background: `linear-gradient(135deg, ${accentColor}80, ${accentColor}40, rgba(255,255,255,0.3), ${accentColor}30)`,
+                    background: `linear-gradient(135deg, ${accentColor}80, ${accentColor}40, ${accentColor}4D, ${accentColor}30)`,
                     boxShadow: `0 25px 60px ${accentColor}40, 0 0 100px ${accentColor}20`,
                   }}
                 >
