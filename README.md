@@ -7,7 +7,7 @@
 ![Three.js](https://img.shields.io/badge/Three.js-0.160-white?style=flat-square&logo=three.js)
 
 ## 功能特性
-
+ 
 - **沉浸式 3D 体验** - 基于 Three.js 的交互式星球场景，提供独特的视觉体验
 - **多角色学科助手** - 数学、语文、科学、英语等多领域 AI 辅导
 - **智能语音交互** - 支持语音输入，自然的对话式学习体验
