@@ -221,7 +221,7 @@ const PlanetExperience = forwardRef<{ handleSectionClick: (sectionId: string) =>
         return x - Math.floor(x)
       }
 
-      return sections.reduce(
+      const positions = sections.reduce(
         (acc, section, index) => {
           const seed = hashString(section.id)
 
@@ -250,6 +250,23 @@ const PlanetExperience = forwardRef<{ handleSectionClick: (sectionId: string) =>
         },
         {} as Record<string, THREE.Vector3>,
       )
+
+      // 添加橙色小球（作业模式）的位置 - 与 OrangeMarker 轨道配置匹配
+      const orangeRadius = 8.5
+      const orangeTiltX = 0.8
+      const orangeTiltY = -0.5
+      const orangeStartAngle = Math.PI
+
+      const ox = Math.cos(orangeStartAngle) * orangeRadius
+      const oy = Math.sin(orangeTiltX) * orangeRadius * 0.2
+      const oz = Math.sin(orangeStartAngle) * orangeRadius
+
+      const orangeRotatedX = ox * Math.cos(orangeTiltY) - oz * Math.sin(orangeTiltY)
+      const orangeRotatedZ = ox * Math.sin(orangeTiltY) + oz * Math.cos(orangeTiltY)
+
+      positions["homework"] = new THREE.Vector3(orangeRotatedX, oy, orangeRotatedZ)
+
+      return positions
     }, []) // Empty dependency array - positions are fixed based on section IDs
 
     // 点击区块时显示弹窗
@@ -364,7 +381,7 @@ const PlanetExperience = forwardRef<{ handleSectionClick: (sectionId: string) =>
             orbitColor={theme.orbitColor}
             isMobile={isMobile}
             showOrangeMarker={showOrangeMarker}
-            onOrangeMarkerClick={onOrangeMarkerClick}
+            onOrangeMarkerClick={() => handleSectionClick("homework")}
           />
 
           <CameraController

@@ -162,6 +162,15 @@ function MainContent() {
   const handleOpenChat = useCallback(
     (sectionId?: string) => {
       const targetId = sectionId || "hero"
+
+      // 处理橙色小球（作业模式）
+      if (targetId === "homework") {
+        setActiveSectionId("hero")
+        setAppMode("homework")
+        setShowChat(true)
+        return
+      }
+
       const section = getSectionById(targetId)
 
       if (section) {
